@@ -36,7 +36,45 @@ st.markdown("""
 /* ── Hide default Streamlit chrome ──────────────────────────────────────── */
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
-header {visibility: hidden;}
+header {
+    background: transparent !important;
+}
+/* Hide all header action elements (Deploy button, etc.) to only show the sidebar toggle */
+[data-testid="stHeaderActionElements"] {
+    display: none !important;
+}
+
+/* 1. Sidebar OFF: Toggle button in the main header (green color) */
+header button, 
+header button svg,
+[data-testid="collapsedControl"],
+[data-testid="collapsedControl"] svg {
+    color: #16a34a !important;
+    fill: #16a34a !important;
+    stroke: #16a34a !important;
+}
+
+/* 2. Sidebar ON: Close button inside the sidebar (light color & always visible) */
+[data-testid="stSidebarHeader"] button,
+[data-testid="stSidebarHeader"] button svg,
+[data-testid="stSidebarCollapseButton"],
+[data-testid="stSidebarCollapseButton"] svg,
+section[data-testid="stSidebar"] button[kind="header"],
+section[data-testid="stSidebar"] button[kind="header"] svg {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* 3. Force the sidebar header/close button container to be fully visible always (disables hover hiding) */
+[data-testid="stSidebarHeader"],
+section[data-testid="stSidebar"] > div:first-child {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+}
 
 /* ── Global typography & background ─────────────────────────────────────── */
 html, body, [class*="css"] {
