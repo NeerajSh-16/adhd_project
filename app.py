@@ -45,10 +45,12 @@ header {
 }
 
 /* 1. Sidebar OFF: Toggle button in the main header (green color) */
-header button, 
-header button svg,
+[data-testid="stHeader"] button,
+[data-testid="stHeader"] button *,
 [data-testid="collapsedControl"],
-[data-testid="collapsedControl"] svg {
+[data-testid="collapsedControl"] *,
+button[kind="headerNoPadding"],
+button[kind="headerNoPadding"] * {
     color: #16a34a !important;
     fill: #16a34a !important;
     stroke: #16a34a !important;
