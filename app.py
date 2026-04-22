@@ -71,17 +71,88 @@ section[data-testid="stSidebar"] h3 {
 
 /* ── Card containers ────────────────────────────────────────────────────── */
 div[data-testid="stExpander"] {
-    background: #ffffff;
+    background: #ffffff !important;
     border: 1px solid #e2e8f0;
     border-radius: 16px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
     margin-bottom: 1rem;
     overflow: hidden;
 }
+div[data-testid="stExpander"] details {
+    background: #ffffff !important;
+}
 div[data-testid="stExpander"] summary {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
     font-weight: 600;
-    color: #1e3a5f;
+    color: #1e3a5f !important;
     padding: 0.8rem 1rem;
+    border-bottom: 1px solid #e8edf2;
+}
+div[data-testid="stExpander"] summary span {
+    color: #1e3a5f !important;
+}
+div[data-testid="stExpander"] summary svg {
+    color: #4a7aab !important;
+    fill: #4a7aab !important;
+}
+/* Ensure expander content area is always light */
+div[data-testid="stExpander"] div[data-testid="stExpanderDetails"] {
+    background: #ffffff !important;
+    padding: 1rem;
+}
+/* Force all labels inside expanders to be dark and readable */
+div[data-testid="stExpander"] label {
+    color: #1e293b !important;
+}
+div[data-testid="stExpander"] .stSelectbox label,
+div[data-testid="stExpander"] .stSlider label,
+div[data-testid="stExpander"] .stTextArea label {
+    color: #334155 !important;
+    font-weight: 500 !important;
+}
+/* Fix selectbox dropdown styling */
+div[data-testid="stExpander"] .stSelectbox > div > div {
+    background: #ffffff !important;
+    color: #1e293b !important;
+}
+div[data-testid="stExpander"] .stSelectbox > div > div > div {
+    color: #1e293b !important;
+}
+
+/* ── Tooltip help icons — force visibility ──────────────────────────── */
+/* Target the "?" tooltip button rendered by Streamlit's help= param */
+div[data-testid="stExpander"] [data-testid="stTooltipIcon"],
+[data-testid="stTooltipIcon"] {
+    color: #4a7aab !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+[data-testid="stTooltipIcon"] svg,
+div[data-testid="stExpander"] [data-testid="stTooltipIcon"] svg {
+    color: #4a7aab !important;
+    stroke: #4a7aab !important;
+    opacity: 1 !important;
+    width: 18px !important;
+    height: 18px !important;
+}
+/* Also catch the generic help icon wrapper Streamlit uses */
+.stTooltipIcon, .st-emotion-cache-1wbqy5l,
+div[data-testid="stExpander"] button[kind="tooltip"],
+div[data-testid="stExpander"] div[data-baseweb="tooltip"] {
+    color: #4a7aab !important;
+    opacity: 1 !important;
+}
+/* Style the circled question mark specifically */
+div[data-testid="stExpander"] svg circle,
+[data-testid="stTooltipIcon"] svg circle {
+    stroke: #4a7aab !important;
+    fill: none !important;
+    opacity: 1 !important;
+}
+div[data-testid="stExpander"] svg path,
+[data-testid="stTooltipIcon"] svg path {
+    fill: #4a7aab !important;
+    opacity: 1 !important;
 }
 
 /* ── Metric cards ───────────────────────────────────────────────────────── */
@@ -489,71 +560,83 @@ elif page == "📝 Patient Assessment":
     with col_left:
 
         # ── Demographics & History ───────────────────────────────────────
-        with st.expander("👤  Demographics & History", expanded=True):
+        with st.expander("Demographics & History", expanded=True):
             demo_c1, demo_c2 = st.columns(2)
             with demo_c1:
                 sex = st.selectbox("Sex", list(SEX_MAP.keys()),
-                                   help="Biological sex as recorded.")
+                                   help="Biological sex of the respondent as recorded in the survey. Used as a categorical predictor since ADHD prevalence differs by sex.")
                 prior_mh = st.selectbox(
                     "Prior Mental Health History",
                     list(PRIOR_MH_MAP.keys()),
-                    help="Any mental health difficulties before university?")
+                    help="Whether the individual experienced any mental health difficulties or symptoms before starting university (e.g. in primary or high school). Pre-existing mental health history is a known risk factor for ADHD.")
             with demo_c2:
                 diagnosed = st.selectbox(
                     "Prior Diagnosis",
                     list(DIAGNOSED_MAP.keys()),
-                    help="Ever been diagnosed with a mental illness?")
+                    help="Whether the individual has ever been formally diagnosed with any mental illness by a healthcare professional. A prior diagnosis may indicate comorbid conditions common alongside ADHD, such as anxiety or depression.")
                 medication = st.selectbox(
                     "Current Psychiatric Medication",
                     list(MEDICATION_MAP.keys()),
-                    help="Currently using prescribed psychiatric medication?")
+                    help="Whether the individual is currently using prescribed psychiatric medication for a mental illness or symptoms of one. Active medication use may indicate ongoing management of mental health conditions.")
 
         # ── BAI Scores ───────────────────────────────────────────────────
-        with st.expander("😰  Beck Anxiety Inventory (BAI)", expanded=True):
+        with st.expander("Beck Anxiety Inventory (BAI)", expanded=True):
             bai_total = st.slider(
                 "BAI Total Score", 0, 63, 10,
-                help="Sum of all 21 BAI items (0–63)")
+                help="The Beck Anxiety Inventory (BAI) is a 21-item self-report measure of anxiety severity. Total score ranges from 0-63. Interpretation: 0-7 Minimal, 8-15 Mild, 16-25 Moderate, 26-63 Severe anxiety. Higher anxiety scores are often comorbid with ADHD.")
             bai_c1, bai_c2 = st.columns(2)
             with bai_c1:
                 bai_item_4 = st.slider(
                     "BAI Item 4 — Unable to Relax", 0, 3, 0,
-                    help="0 = Not at all, 3 = Severely")
+                    help="Measures the severity of being unable to relax. Scored 0-3 (0=Not at all, 1=Mildly, 2=Moderately, 3=Severely). Restlessness and inability to relax can overlap with ADHD hyperactivity symptoms.")
             with bai_c2:
                 bai_item_8 = st.slider(
                     "BAI Item 8 — Unsteady", 0, 3, 0,
-                    help="0 = Not at all, 3 = Severely")
+                    help="Measures the severity of feeling unsteady or having difficulty with balance. Scored 0-3 (0=Not at all, 1=Mildly, 2=Moderately, 3=Severely). Physical unsteadiness can relate to the motor restlessness seen in ADHD.")
 
         # ── BDI Scores ───────────────────────────────────────────────────
-        with st.expander("😔  Beck Depression Inventory (BDI)", expanded=True):
+        with st.expander("Beck Depression Inventory (BDI)", expanded=True):
             bdi_total = st.slider(
                 "BDI Total Score", 0, 63, 8,
-                help="Sum of all 21 BDI-II items (0–63)")
+                help="The Beck Depression Inventory II (BDI-II) is a 21-item self-report measure of depression severity. Total score ranges from 0-63. Interpretation: 0-13 Minimal, 14-19 Mild, 20-28 Moderate, 29-63 Severe depression. Depression frequently co-occurs with ADHD and can mask or amplify ADHD symptoms.")
             bdi_item_19 = st.slider(
                 "BDI Item 19 — Concentration Difficulty", 0, 3, 0,
-                help="0 = I can concentrate as well as ever, "
-                     "3 = I can't concentrate on anything")
+                help="Measures self-reported difficulty concentrating. 0 = I can concentrate as well as ever, 1 = I can't concentrate as well as usual, 2 = It's hard to keep my mind on anything for very long, 3 = I find I can't concentrate on anything. This item directly overlaps with core ADHD inattention symptoms.")
 
     # ────────────────────── RIGHT COLUMN ─────────────────────────────────
     with col_right:
 
         # ── ASRS Part B ──────────────────────────────────────────────────
-        with st.expander("🧪  ASRS Part B — Items 7 to 18", expanded=True):
-            st.caption("Rate each item: **0** = Never · **1** = Rarely · "
-                       "**2** = Sometimes · **3** = Often · **4** = Very Often")
+        with st.expander("ASRS Part B — Items 7 to 18", expanded=True):
+            st.caption("The Adult ADHD Self-Report Scale (ASRS) is a WHO-developed screening tool. "
+                       "Part B (Items 7-18) measures additional inattention and hyperactivity-impulsivity symptoms. "
+                       "Rate each item: **0** = Never, **1** = Rarely, **2** = Sometimes, **3** = Often, **4** = Very Often")
 
             asrs_labels = {
-                7:  "Difficulty getting things in order for a task",
-                8:  "Difficulty keeping attention on tasks",
-                9:  "Difficulty concentrating on what people say",
-                10: "Misplace or have difficulty finding things at home or work",
-                11: "Distracted by activity or noise around you",
-                12: "Leave your seat in meetings or situations",
-                13: "Feel restless or fidgety",
-                14: "Difficulty unwinding and relaxing when free time",
-                15: "Find yourself talking too much in social situations",
-                16: "Finish other people's sentences before they can",
-                17: "Difficulty waiting your turn in queued situations",
-                18: "Interrupt others when they are busy",
+                7:  ("Difficulty getting things in order",
+                     "How often do you have difficulty getting things in order when you have to do a task that requires organisation? Assesses organisational skills — a core executive function affected by ADHD."),
+                8:  ("Difficulty sustaining attention",
+                     "How often do you have problems remembering appointments or obligations? Measures sustained attention — difficulty keeping focus on tasks is a hallmark inattentive ADHD symptom."),
+                9:  ("Difficulty concentrating on conversations",
+                     "How often do you have difficulty concentrating on what people say to you, even when they are speaking directly? Evaluates auditory attention, commonly impaired in ADHD."),
+                10: ("Misplacing things",
+                     "How often do you misplace or have difficulty finding things at home or at work? Assesses organisational memory — frequently losing items is a diagnostic criterion for ADHD."),
+                11: ("Easily distracted",
+                     "How often are you distracted by activity or noise around you? Measures distractibility — heightened sensitivity to external stimuli is characteristic of ADHD."),
+                12: ("Leaving seat inappropriately",
+                     "How often do you leave your seat in meetings or other situations in which you are expected to remain seated? Evaluates hyperactive motor behaviour."),
+                13: ("Restless or fidgety",
+                     "How often do you feel restless or fidgety? Measures physical hyperactivity — an inability to remain still, a core hyperactive-impulsive symptom."),
+                14: ("Difficulty relaxing",
+                     "How often do you have difficulty unwinding and relaxing when you have time to yourself? Assesses internal restlessness, which persists into adulthood more than physical hyperactivity."),
+                15: ("Talking excessively",
+                     "How often do you find yourself talking too much when you are in social situations? Measures impulsive verbal behaviour — excessive talking is an impulsivity marker."),
+                16: ("Finishing others' sentences",
+                     "How often do you find yourself finishing sentences of people you are talking to before they can finish them themselves? Evaluates conversational impulsivity."),
+                17: ("Difficulty waiting turn",
+                     "How often do you have difficulty waiting your turn in situations when turn-taking is required? Measures behavioural impulsivity — a key ADHD diagnostic criterion."),
+                18: ("Interrupting others",
+                     "How often do you interrupt others when they are busy? Assesses social impulsivity — intruding on others' activities is a classic ADHD behaviour."),
             }
 
             asrs_values = {}
@@ -561,51 +644,50 @@ elif page == "📝 Patient Assessment":
             asrs_items = list(asrs_labels.items())
             for i in range(0, len(asrs_items), 2):
                 a_c1, a_c2 = st.columns(2)
-                item_num, label = asrs_items[i]
+                item_num, (short_label, long_help) = asrs_items[i]
                 with a_c1:
                     asrs_values[item_num] = st.slider(
-                        f"Item {item_num}", 0, 4, 0,
+                        f"Item {item_num} — {short_label}", 0, 4, 0,
                         key=f"asrs_{item_num}",
-                        help=label)
+                        help=long_help)
                 if i + 1 < len(asrs_items):
-                    item_num2, label2 = asrs_items[i + 1]
+                    item_num2, (short_label2, long_help2) = asrs_items[i + 1]
                     with a_c2:
                         asrs_values[item_num2] = st.slider(
-                            f"Item {item_num2}", 0, 4, 0,
+                            f"Item {item_num2} — {short_label2}", 0, 4, 0,
                             key=f"asrs_{item_num2}",
-                            help=label2)
+                            help=long_help2)
 
         # ── AAS Scores ───────────────────────────────────────────────────
-        with st.expander("📎  Adult Attachment Scale (AAS)", expanded=True):
+        with st.expander("Adult Attachment Scale (AAS)", expanded=True):
             aas_item_3 = st.slider(
-                "AAS Item 3", 1, 5, 3,
-                help="Likert scale: 1 = Not at all characteristic, "
-                     "5 = Very characteristic")
+                "AAS Item 3 — Comfort with closeness", 1, 5, 3,
+                help="The Adult Attachment Scale (AAS) measures attachment styles which influence emotional regulation. Item 3 assesses comfort with closeness to others. Scored 1-5 (1=Not at all characteristic of me, 5=Very characteristic of me). Insecure attachment is associated with emotional dysregulation seen in ADHD.")
             aas_c1, aas_c2 = st.columns(2)
             with aas_c1:
                 aas_item_4 = st.slider(
-                    "AAS Item 4", 1, 5, 3,
-                    help="1–5 Likert scale")
+                    "AAS Item 4 — Anxiety about abandonment", 1, 5, 3,
+                    help="Measures anxiety about being abandoned or unloved. Scored 1-5 (1=Not at all characteristic, 5=Very characteristic). Attachment anxiety correlates with emotional impulsivity, a feature commonly seen in ADHD.")
             with aas_c2:
                 aas_item_6 = st.slider(
-                    "AAS Item 6", 1, 5, 3,
-                    help="1–5 Likert scale")
+                    "AAS Item 6 — Comfort depending on others", 1, 5, 3,
+                    help="Measures comfort with depending on other people. Scored 1-5 (1=Not at all characteristic, 5=Very characteristic). Difficulty depending on others may reflect the self-reliance patterns often developed by individuals with ADHD.")
 
         # ── Clinical Notes (free text) ───────────────────────────────────
-        with st.expander("💬  Clinical Notes (Free Text)", expanded=True):
+        with st.expander("Clinical Notes (Free Text)", expanded=True):
             clinical_text = st.text_area(
                 "If you have been diagnosed formally or informally, "
                 "please list the diagnosis/diagnoses:",
                 height=120,
-                placeholder="e.g., anxiety, depression, autism spectrum disorder…\n"
+                placeholder="e.g., anxiety, depression, autism spectrum disorder...\n"
                             "Type 'none' if not applicable.",
-                help="This text is processed with TF-IDF for NLP features.")
+                help="This free-text field captures self-reported diagnoses. The text is processed using TF-IDF (Term Frequency-Inverse Document Frequency) vectorisation to extract NLP features. Common terms like 'anxiety', 'depression', and 'ADHD' become numerical signals the model uses for prediction.")
 
     # ── Submit button ────────────────────────────────────────────────────
     st.markdown("<br>", unsafe_allow_html=True)
     _, btn_col, _ = st.columns([1, 2, 1])
     with btn_col:
-        run_assessment = st.button("🔬  Run Assessment", use_container_width=True)
+        run_assessment = st.button("Run Assessment", use_container_width=True)
 
     # ── Process on submit ────────────────────────────────────────────────
     if run_assessment:
@@ -846,49 +928,6 @@ elif page == "🔬 Analysis & Results":
             """, unsafe_allow_html=True)
 
         st.markdown("<br>", unsafe_allow_html=True)
-
-        # ── Input Summary ────────────────────────────────────────────────
-        st.markdown('<div class="section-label">Input Summary</div>',
-                    unsafe_allow_html=True)
-
-        with st.expander("📋  View Submitted Assessment Data", expanded=False):
-            sum_c1, sum_c2, sum_c3 = st.columns(3)
-
-            with sum_c1:
-                st.markdown("**ASRS Part B Scores (Items 7–18)**")
-                for i, val in enumerate(result["numeric"][:12], start=7):
-                    bar_len = "█" * val + "░" * (4 - val)
-                    st.code(f"Item {i:2d}: {bar_len}  ({val})", language=None)
-
-            with sum_c2:
-                st.markdown("**Anxiety & Depression**")
-                labels = ["BAI Total", "BAI Item 4", "BAI Item 8",
-                          "BDI Total", "BDI Item 19"]
-                for label, val in zip(labels, result["numeric"][12:17]):
-                    st.markdown(f"- **{label}:** {val}")
-
-                st.markdown("**Attachment**")
-                aas_labels = ["AAS Item 3", "AAS Item 4", "AAS Item 6"]
-                for label, val in zip(aas_labels, result["numeric"][17:20]):
-                    st.markdown(f"- **{label}:** {val}")
-
-            with sum_c3:
-                st.markdown("**Demographics**")
-                cat_labels = ["Sex", "Prior Diagnosis", "Medication",
-                              "Prior MH History"]
-                cat_maps = [
-                    {v: k for k, v in SEX_MAP.items()},
-                    {v: k for k, v in DIAGNOSED_MAP.items()},
-                    {v: k for k, v in MEDICATION_MAP.items()},
-                    {v: k for k, v in PRIOR_MH_MAP.items()},
-                ]
-                for label, val, rev_map in zip(cat_labels,
-                                                result["categorical"],
-                                                cat_maps):
-                    st.markdown(f"- **{label}:** {rev_map.get(val, val)}")
-
-                st.markdown("**Clinical Text**")
-                st.text(result["text"][:200] if result["text"] else "none")
 
         # ── Disclaimer ───────────────────────────────────────────────────
         st.markdown("""
