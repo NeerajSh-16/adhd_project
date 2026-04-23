@@ -713,15 +713,7 @@ elif page == "📝 Patient Assessment":
                     "AAS Item 6 — Comfort depending on others", 1, 5, 3,
                     help="Measures comfort with depending on other people. Scored 1-5 (1=Not at all characteristic, 5=Very characteristic). Difficulty depending on others may reflect the self-reliance patterns often developed by individuals with ADHD.")
 
-        # ── Clinical Notes (free text) ───────────────────────────────────
-        with st.expander("Clinical Notes (Free Text)", expanded=True):
-            clinical_text = st.text_area(
-                "If you have been diagnosed formally or informally, "
-                "please list the diagnosis/diagnoses:",
-                height=120,
-                placeholder="e.g., anxiety, depression, autism spectrum disorder...\n"
-                            "Type 'none' if not applicable.",
-                help="This free-text field captures self-reported diagnoses. The text is processed using TF-IDF (Term Frequency-Inverse Document Frequency) vectorisation to extract NLP features. Common terms like 'anxiety', 'depression', and 'ADHD' become numerical signals the model uses for prediction.")
+
 
     # ── Submit button ────────────────────────────────────────────────────
     st.markdown("<br>", unsafe_allow_html=True)
@@ -755,7 +747,7 @@ elif page == "📝 Patient Assessment":
             ]
 
             # ── 3. TF-IDF transform the clinical text ───────────────────
-            text_input = clinical_text.strip().lower() if clinical_text else "none"
+            text_input = "none"
 
             # TODO ──────────────────────────────────────────────────────
             # Replace this placeholder with actual vectorizer transform:
